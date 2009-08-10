@@ -6,6 +6,7 @@ License:	Ruby's
 Group:		Development/Languages
 Source0:	http://gems.rubyforge.org/gems/activerdf-%{version}.gem
 # Source0-md5:	1f4904cbafd17fef7ac46213eec377be
+Patch0:	%{name}-nogems.patch
 URL:		http://activerdf.rubyforge.org
 BuildRequires:	rake
 BuildRequires:	rpmbuild(macros) >= 1.277
@@ -24,6 +25,7 @@ properties, etc. programmatically, without queries.
 %setup -q -c -n activerdf-%{version}
 tar xzf data.tar.gz
 cp %{_datadir}/setup.rb .
+%patch0 -p1
 
 %build
 ruby setup.rb config \

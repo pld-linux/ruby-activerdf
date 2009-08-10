@@ -1,0 +1,142 @@
+Only in activerdf-1.6.11: .config
+Only in activerdf-1.6.11: debugfiles.list
+Only in activerdf-1.6.11: debuglinks.list
+Only in activerdf-1.6.11: debugsources.list
+Only in activerdf-1.6.11: InstalledFiles
+diff -ur activerdf-1.6.11-o/lib/active_rdf/federation/active_rdf_adapter.rb activerdf-1.6.11/lib/active_rdf/federation/active_rdf_adapter.rb
+--- activerdf-1.6.11-o/lib/active_rdf/federation/active_rdf_adapter.rb	1969-12-31 17:00:00.000000000 -0700
++++ activerdf-1.6.11/lib/active_rdf/federation/active_rdf_adapter.rb	2009-08-10 07:56:30.368375745 -0600
+@@ -1,5 +1,5 @@
+ require 'active_rdf'
+-require 'queryengine/query2sparql'
++require 'active_rdf/queryengine/query2sparql'
+ 
+ # Generic superclass of all adapters
+ 
+diff -ur activerdf-1.6.11-o/lib/active_rdf/federation/federation_manager.rb activerdf-1.6.11/lib/active_rdf/federation/federation_manager.rb
+--- activerdf-1.6.11-o/lib/active_rdf/federation/federation_manager.rb	1969-12-31 17:00:00.000000000 -0700
++++ activerdf-1.6.11/lib/active_rdf/federation/federation_manager.rb	2009-08-10 07:56:40.578167268 -0600
+@@ -1,4 +1,4 @@
+-require 'federation/connection_pool'
++require 'active_rdf/federation/connection_pool'
+ 
+ # Manages the federation of datasources: distributes queries to right 
+ # datasources and merges their results
+diff -ur activerdf-1.6.11-o/lib/active_rdf/objectmanager/resource.rb activerdf-1.6.11/lib/active_rdf/objectmanager/resource.rb
+--- activerdf-1.6.11-o/lib/active_rdf/objectmanager/resource.rb	1969-12-31 17:00:00.000000000 -0700
++++ activerdf-1.6.11/lib/active_rdf/objectmanager/resource.rb	2009-08-10 07:53:34.364853298 -0600
+@@ -1,8 +1,8 @@
+ require 'active_rdf'
+-require 'objectmanager/object_manager'
+-require 'objectmanager/namespace'
+-require 'queryengine/query'
+-require 'instance_exec'
++require 'active_rdf/objectmanager/object_manager'
++require 'active_rdf/objectmanager/namespace'
++require 'active_rdf/queryengine/query'
++require 'active_rdf/instance_exec'
+ 
+ module RDFS
+ 	# Represents an RDF resource and manages manipulations of that resource,
+diff -ur activerdf-1.6.11-o/lib/active_rdf/queryengine/query.rb activerdf-1.6.11/lib/active_rdf/queryengine/query.rb
+--- activerdf-1.6.11-o/lib/active_rdf/queryengine/query.rb	1969-12-31 17:00:00.000000000 -0700
++++ activerdf-1.6.11/lib/active_rdf/queryengine/query.rb	2009-08-10 07:56:11.744893314 -0600
+@@ -1,5 +1,5 @@
+ require 'active_rdf'
+-require 'federation/federation_manager'
++require 'active_rdf/federation/federation_manager'
+ 
+ # Represents a query on a datasource, abstract representation of SPARQL 
+ # features. Query is passed to federation manager or adapter for execution on 
+diff -ur activerdf-1.6.11-o/lib/active_rdf.rb activerdf-1.6.11/lib/active_rdf.rb
+--- activerdf-1.6.11-o/lib/active_rdf.rb	1969-12-31 17:00:00.000000000 -0700
++++ activerdf-1.6.11/lib/active_rdf.rb	2009-08-10 07:53:34.364853298 -0600
+@@ -1,39 +1,16 @@
+-
+-require 'rubygems'
+-
+-# ActiveRDF loader
+-
+-# determine the directory in which we are running depending on cruby or jruby
+-if RUBY_PLATFORM =~ /java/
+-  # jruby can not follow symlinks, because java does not know the symlink concept
+-  this_dir = File.dirname(File.expand_path(__FILE__))
+-else
+-  file = File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__
+-  this_dir = File.dirname(File.expand_path(file))  
+-end
+-
+-# set the load path, which uses the running directory, but has to be different if running on jruby directly from source. 
+-if RUBY_PLATFORM =~ /java/ and Gem::cache.search(/^activerdf$/).empty?
+-  $: << this_dir + '/activerdf/lib/'
+-  $: << this_dir + '/activerdf/lib/active_rdf/'
+-else
+-  $: << this_dir + '/'
+-  $: << this_dir + '/active_rdf/'
+-end
+-
+ require 'active_rdf_helpers'
+ require 'active_rdf_log'
+ 
+ $activerdflog.info "ActiveRDF started, logging level: #{$activerdflog.level}"
+ 
+ # load standard classes that need to be loaded at startup
+-require 'objectmanager/resource'
+-require 'objectmanager/bnode'
+-require 'objectmanager/literal'
+-require 'objectmanager/namespace'
+-require 'federation/connection_pool'
+-require 'queryengine/query'
+-require 'federation/active_rdf_adapter'
++require 'active_rdf/objectmanager/resource'
++require 'active_rdf/objectmanager/bnode'
++require 'active_rdf/objectmanager/literal'
++require 'active_rdf/objectmanager/namespace'
++require 'active_rdf/federation/connection_pool'
++require 'active_rdf/queryengine/query'
++require 'active_rdf/federation/active_rdf_adapter'
+ 
+ def load_adapter s
+   begin
+@@ -44,27 +21,17 @@
+ end
+ 
+ 
+-# determine whether activerdf is installed as a gem:
+-if Gem::cache.search(/^activerdf$/).empty?
+-	# we are not running as a gem
+-	$activerdflog.info 'ActiveRDF is NOT installed as a Gem'
+-	if RUBY_PLATFORM =~ /java/
+-	  load_adapter this_dir + '/activerdf/activerdf-jena/lib/activerdf_jena/init'
+-	  load_adapter this_dir + '/activerdf/activerdf-sparql/lib/activerdf_sparql/sparql'
+-    #load_adapter this_dir + '/../activerdf-sesame/lib/activerdf_sesame/sesame'
+-	else
+-  	load_adapter this_dir + '/../activerdf-rdflite/lib/activerdf_rdflite/rdflite'
+-  	load_adapter this_dir + '/../activerdf-rdflite/lib/activerdf_rdflite/fetching'
+-  	load_adapter this_dir + '/../activerdf-rdflite/lib/activerdf_rdflite/suggesting'
+-  	load_adapter this_dir + '/../activerdf-redland/lib/activerdf_redland/redland'
+-  	load_adapter this_dir + '/../activerdf-sparql/lib/activerdf_sparql/sparql'
+-  	#load_adapter this_dir + '/../activerdf-yars/lib/activerdf_yars/jars2'	  
+-  end
+-  
++# we are not running as a gem
++$activerdflog.info 'ActiveRDF is NOT installed as a Gem'
++if RUBY_PLATFORM =~ /java/
++  load_adapter 'activerdf_jena/init'
++  load_adapter 'activerdf_sparql/sparql'
++   #load_adapter 'activerdf_sesame/sesame'
+ else
+-	# we are running as a gem
+-	require 'gem_plugin'
+-	$activerdflog.info 'ActiveRDF is installed as a Gem'
+-	GemPlugin::Manager.instance.load "activerdf" => GemPlugin::INCLUDE
++ 	load_adapter 'activerdf_rdflite/rdflite'
++ 	load_adapter 'activerdf_rdflite/fetching'
++ 	load_adapter 'activerdf_rdflite/suggesting'
++ 	load_adapter 'activerdf_redland/redland'
++ 	load_adapter 'activerdf_sparql/sparql'
++ 	#load_adapter 'activerdf_yars/jars2'	  
+ end
+-
+Only in activerdf-1.6.11: rdoc
+Only in activerdf-1.6.11: ri
