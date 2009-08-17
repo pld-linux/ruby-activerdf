@@ -1,11 +1,6 @@
-Only in activerdf-1.6.11: .config
-Only in activerdf-1.6.11: debugfiles.list
-Only in activerdf-1.6.11: debuglinks.list
-Only in activerdf-1.6.11: debugsources.list
-Only in activerdf-1.6.11: InstalledFiles
 diff -ur activerdf-1.6.11-o/lib/active_rdf/federation/active_rdf_adapter.rb activerdf-1.6.11/lib/active_rdf/federation/active_rdf_adapter.rb
 --- activerdf-1.6.11-o/lib/active_rdf/federation/active_rdf_adapter.rb	1969-12-31 17:00:00.000000000 -0700
-+++ activerdf-1.6.11/lib/active_rdf/federation/active_rdf_adapter.rb	2009-08-10 07:56:30.368375745 -0600
++++ activerdf-1.6.11/lib/active_rdf/federation/active_rdf_adapter.rb	2009-08-16 22:53:11.777666174 -0600
 @@ -1,5 +1,5 @@
  require 'active_rdf'
 -require 'queryengine/query2sparql'
@@ -15,7 +10,7 @@ diff -ur activerdf-1.6.11-o/lib/active_rdf/federation/active_rdf_adapter.rb acti
  
 diff -ur activerdf-1.6.11-o/lib/active_rdf/federation/federation_manager.rb activerdf-1.6.11/lib/active_rdf/federation/federation_manager.rb
 --- activerdf-1.6.11-o/lib/active_rdf/federation/federation_manager.rb	1969-12-31 17:00:00.000000000 -0700
-+++ activerdf-1.6.11/lib/active_rdf/federation/federation_manager.rb	2009-08-10 07:56:40.578167268 -0600
++++ activerdf-1.6.11/lib/active_rdf/federation/federation_manager.rb	2009-08-16 22:53:11.777666174 -0600
 @@ -1,4 +1,4 @@
 -require 'federation/connection_pool'
 +require 'active_rdf/federation/connection_pool'
@@ -24,7 +19,7 @@ diff -ur activerdf-1.6.11-o/lib/active_rdf/federation/federation_manager.rb acti
  # datasources and merges their results
 diff -ur activerdf-1.6.11-o/lib/active_rdf/objectmanager/resource.rb activerdf-1.6.11/lib/active_rdf/objectmanager/resource.rb
 --- activerdf-1.6.11-o/lib/active_rdf/objectmanager/resource.rb	1969-12-31 17:00:00.000000000 -0700
-+++ activerdf-1.6.11/lib/active_rdf/objectmanager/resource.rb	2009-08-10 07:53:34.364853298 -0600
++++ activerdf-1.6.11/lib/active_rdf/objectmanager/resource.rb	2009-08-16 22:53:11.777666174 -0600
 @@ -1,8 +1,8 @@
  require 'active_rdf'
 -require 'objectmanager/object_manager'
@@ -40,7 +35,7 @@ diff -ur activerdf-1.6.11-o/lib/active_rdf/objectmanager/resource.rb activerdf-1
  	# Represents an RDF resource and manages manipulations of that resource,
 diff -ur activerdf-1.6.11-o/lib/active_rdf/queryengine/query.rb activerdf-1.6.11/lib/active_rdf/queryengine/query.rb
 --- activerdf-1.6.11-o/lib/active_rdf/queryengine/query.rb	1969-12-31 17:00:00.000000000 -0700
-+++ activerdf-1.6.11/lib/active_rdf/queryengine/query.rb	2009-08-10 07:56:11.744893314 -0600
++++ activerdf-1.6.11/lib/active_rdf/queryengine/query.rb	2009-08-16 22:53:25.868196968 -0600
 @@ -1,5 +1,5 @@
  require 'active_rdf'
 -require 'federation/federation_manager'
@@ -48,9 +43,18 @@ diff -ur activerdf-1.6.11-o/lib/active_rdf/queryengine/query.rb activerdf-1.6.11
  
  # Represents a query on a datasource, abstract representation of SPARQL 
  # features. Query is passed to federation manager or adapter for execution on 
+@@ -202,7 +202,7 @@
+ 
+ 	# Returns SPARQL serialisation of query
+   def to_sp
+-		require 'queryengine/query2sparql'
++		require 'active_rdf/queryengine/query2sparql'
+ 		Query2SPARQL.translate(self)
+   end
+ 
 diff -ur activerdf-1.6.11-o/lib/active_rdf.rb activerdf-1.6.11/lib/active_rdf.rb
 --- activerdf-1.6.11-o/lib/active_rdf.rb	1969-12-31 17:00:00.000000000 -0700
-+++ activerdf-1.6.11/lib/active_rdf.rb	2009-08-10 07:53:34.364853298 -0600
++++ activerdf-1.6.11/lib/active_rdf.rb	2009-08-16 22:53:11.777666174 -0600
 @@ -1,39 +1,16 @@
 -
 -require 'rubygems'
@@ -138,5 +142,3 @@ diff -ur activerdf-1.6.11-o/lib/active_rdf.rb activerdf-1.6.11/lib/active_rdf.rb
 + 	#load_adapter 'activerdf_yars/jars2'	  
  end
 -
-Only in activerdf-1.6.11: rdoc
-Only in activerdf-1.6.11: ri
