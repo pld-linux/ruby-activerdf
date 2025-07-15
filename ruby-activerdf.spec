@@ -25,7 +25,7 @@ programmatically, without queries.
 %setup -q -c -n activerdf-%{version}
 tar xzf data.tar.gz
 cp %{_datadir}/setup.rb .
-%patch0 -p1
+%patch -P0 -p1
 
 %build
 ruby setup.rb config \
